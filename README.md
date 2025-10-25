@@ -1,73 +1,90 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
-</p>
+# Base NestJS Backend Starter
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+A production-ready NestJS base project with industry-standard structure, secure bootstrap, typed configuration, validation, health checks, logging, Swagger docs, linting/formatting, and Docker setup.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## Features
+- Typed configuration with validation (`@nestjs/config`, `joi`)
+- Centralized bootstrap: global prefix, API versioning, CORS, Helmet, compression, cookies
+- Global validation pipe (whitelist + transform)
+- Structured logging with `nestjs-pino` (pretty in dev)
+- Rate limiting via `@nestjs/throttler`
+- Health checks with `@nestjs/terminus` at `/health`
+- OpenAPI (Swagger) docs (configurable path)
+- ESLint + Prettier configured
+- Dockerfile and docker-compose for local/prod
 
-## Description
-
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
-
-## Installation
-
-```bash
-$ pnpm install
+## Project Structure
+```
+src/
+  common/
+    filters/
+    interceptors/
+  config/
+    configuration.ts
+    validation.ts
+  modules/
+    health/
+      health.controller.ts
+      health.module.ts
+  app.controller.ts
+  app.module.ts
+  app.service.ts
+  main.ts
 ```
 
-## Running the app
-
+## Getting Started
+1. Copy env and install dependencies:
 ```bash
-# development
-$ pnpm run start
-
-# watch mode
-$ pnpm run start:dev
-
-# production mode
-$ pnpm run start:prod
+cp .env.example .env
+pnpm install
+```
+2. Run locally (watch):
+```bash
+pnpm run start:dev
+```
+3. Build and run prod:
+```bash
+pnpm run build
+pnpm run start:prod
 ```
 
-## Test
+## Environment
+Edit `.env` (all values validated):
+- APP_NAME, NODE_ENV, HOST, PORT, GLOBAL_PREFIX
+- LOG_LEVEL, LOG_PRETTY
+- CORS_ENABLED, CORS_ORIGIN
+- SWAGGER_ENABLED, SWAGGER_PATH, SWAGGER_TITLE, SWAGGER_DESCRIPTION, SWAGGER_VERSION
+- RATE_LIMIT_TTL, RATE_LIMIT_LIMIT
 
+## API
+- Hello: `GET /api/v1`
+- Health: `GET /health`
+- Docs: `GET /docs` (if enabled)
+
+## Scripts
+- build: clean and compile
+- start: run compiled app
+- start:dev: dev server with watch
+- start:prod: production mode
+- lint: lint and fix
+- test, test:watch, test:cov, test:e2e
+
+## Docker
+Build and run:
 ```bash
-# unit tests
-$ pnpm run test
-
-# e2e tests
-$ pnpm run test:e2e
-
-# test coverage
-$ pnpm run test:cov
+docker build -t base-api .
+docker run -p 3000:3000 --env-file .env base-api
+```
+Or via compose:
+```bash
+docker-compose up --build
 ```
 
-## Support
-
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+## Conventions
+- Use `v{n}` URI versioning; add `@Version('2')` for new endpoints
+- Keep modules self-contained under `src/modules/<name>`
+- Configuration under `src/config` only; do not read `process.env` elsewhere
+- Global concerns (filters, interceptors) under `src/common`
 
 ## License
-
-Nest is [MIT licensed](LICENSE).
+UNLICENSED (customize as needed)
